@@ -1,5 +1,6 @@
 import logging
 
+
 # Custom colored formatter
 class ColorFormatter(logging.Formatter):
     COLORS = {
@@ -53,25 +54,25 @@ class Logger:
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
 
-    def debug(self, message):
+    def debug(self, message, *args, **kwargs):
         """Logs a debug message."""
-        self.logger.debug(message)
+        self.logger.debug(message, *args, **kwargs)
 
-    def info(self, message):
+    def info(self, message, *args, **kwargs):
         """Logs an information message."""
-        self.logger.info(message)
+        self.logger.info(message, *args, **kwargs)
 
-    def warning(self, message):
+    def warning(self, message, *args, **kwargs):
         """Logs a warning message."""
-        self.logger.warning(message)
+        self.logger.warning(message, *args, **kwargs)
 
-    def error(self, message, exc_info=None):
+    def error(self, message, *args, **kwargs):
         """Logs an error message."""
-        self.logger.error(message, exc_info=exc_info)
+        self.logger.error(message, *args, **kwargs)
 
-    def critical(self, message):
+    def critical(self, message, *args, **kwargs):
         """Logs a critical message."""
-        self.logger.critical(message)
+        self.logger.critical(message, *args, **kwargs)
 
 
 logger = Logger(app_name="Backend-API")
