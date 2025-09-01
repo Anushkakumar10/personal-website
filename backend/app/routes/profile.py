@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from .. import models, schemas
 from ..db import get_db
@@ -13,52 +15,36 @@ async def get_profile(
     profile_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
     logger.info("Fetching profile id=%s", profile_id)
-    # assume single profile with id=1 as before
-    profile = await models.Profile.get_by_id(profile_id, session=session)
+
+    stmt = (
+        select(models.Profile)
+        .where(models.Profile.id == profile_id)
+        .options(
+            selectinload(models.Profile.projects),
+            selectinload(models.Profile.experiences),
+            selectinload(models.Profile.educations),
+            selectinload(models.Profile.certifications),
+            selectinload(models.Profile.awards),
+            selectinload(models.Profile.publications),
+            selectinload(models.Profile.contacts),
+            selectinload(models.Profile.social_links),
+            selectinload(models.Profile.portfolio_items),
+            selectinload(models.Profile.references),
+            selectinload(models.Profile.skill_items),
+        )
+    )
+    result = await session.execute(stmt)
+    profile = result.scalars().first()
+
     if not profile:
         logger.warning("Profile id=%s not found", profile_id)
         raise HTTPException(status_code=404, detail="Profile not found")
 
-    # gather related objects (lazy loading isn't available in async)
-    projects = await models.Project.list(
-        filters=[models.Project.profile_id == profile.id], session=session
-    )
-    experiences = await models.Experience.list(
-        filters=[models.Experience.profile_id == profile.id], session=session
-    )
-    educations = await models.Education.list(
-        filters=[models.Education.profile_id == profile.id], session=session
-    )
-    certifications = await models.Certification.list(
-        filters=[models.Certification.profile_id == profile.id], session=session
-    )
-    awards = await models.Award.list(
-        filters=[models.Award.profile_id == profile.id], session=session
-    )
-    publications = await models.Publication.list(
-        filters=[models.Publication.profile_id == profile.id], session=session
-    )
-    contacts = await models.Contact.list(
-        filters=[models.Contact.profile_id == profile.id], session=session
-    )
-    social_links = await models.SocialLink.list(
-        filters=[models.SocialLink.profile_id == profile.id], session=session
-    )
-    portfolio_items = await models.PortfolioItem.list(
-        filters=[models.PortfolioItem.profile_id == profile.id], session=session
-    )
-    references = await models.Reference.list(
-        filters=[models.Reference.profile_id == profile.id], session=session
-    )
-    skill_items = await models.Skill.list(
-        filters=[models.Skill.profile_id == profile.id], session=session
-    )
-
     logger.debug(
         "Assembled profile id=%s with related counts projects=%d experiences=%d",
         profile.id,
-        len(projects),
-        len(experiences),
+        len(profile.projects),
+        len(profile.experiences),
     )
     return {
         "id": profile.id,
@@ -67,17 +53,17 @@ async def get_profile(
         "location": profile.location,
         "summary": profile.summary,
         "skills": profile.skills or [],
-        "projects": projects,
-        "experiences": experiences,
-        "educations": educations,
-        "certifications": certifications,
-        "awards": awards,
-        "publications": publications,
-        "contacts": contacts,
-        "social_links": social_links,
-        "portfolio_items": portfolio_items,
-        "references": references,
-        "skill_items": skill_items,
+        "projects": profile.projects,
+        "experiences": profile.experiences,
+        "educations": profile.educations,
+        "certifications": profile.certifications,
+        "awards": profile.awards,
+        "publications": profile.publications,
+        "contacts": profile.contacts,
+        "social_links": profile.social_links,
+        "portfolio_items": profile.portfolio_items,
+        "references": profile.references,
+        "skill_items": profile.skill_items,
     }
 
 

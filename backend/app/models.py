@@ -131,6 +131,18 @@ class Profile(CRUDMixin, Base):
     summary = Column(String)
     skills = Column(ARRAY(String))
 
+    projects = relationship("Project", back_populates="profile")
+    experiences = relationship("Experience", back_populates="profile")
+    educations = relationship("Education", back_populates="profile")
+    certifications = relationship("Certification", back_populates="profile")
+    awards = relationship("Award", back_populates="profile")
+    publications = relationship("Publication", back_populates="profile")
+    contacts = relationship("Contact", back_populates="profile")
+    social_links = relationship("SocialLink", back_populates="profile")
+    portfolio_items = relationship("PortfolioItem", back_populates="profile")
+    references = relationship("Reference", back_populates="profile")
+    skill_items = relationship("Skill", back_populates="profile")
+
 
 class Project(CRUDMixin, Base):
     __tablename__ = "projects"
@@ -139,7 +151,7 @@ class Project(CRUDMixin, Base):
     description = Column(String)
     skills = Column(ARRAY(String))
     profile_id = Column(Integer, ForeignKey("profile.id"))
-    profile = relationship("Profile", backref="projects")
+    profile = relationship("Profile", back_populates="projects")
 
 
 class Experience(CRUDMixin, Base):
@@ -154,7 +166,7 @@ class Experience(CRUDMixin, Base):
     description = Column(Text)
     currently = Column(Boolean, default=False)
     skills = Column(ARRAY(String))
-    profile = relationship("Profile", backref="experiences")
+    profile = relationship("Profile", back_populates="experiences")
 
 
 class Education(CRUDMixin, Base):
@@ -168,7 +180,7 @@ class Education(CRUDMixin, Base):
     end_date = Column(Date)
     grade = Column(String)
     description = Column(Text)
-    profile = relationship("Profile", backref="educations")
+    profile = relationship("Profile", back_populates="educations")
 
 
 class Certification(CRUDMixin, Base):
@@ -181,7 +193,7 @@ class Certification(CRUDMixin, Base):
     expiration_date = Column(Date)
     credential_id = Column(String)
     credential_url = Column(String)
-    profile = relationship("Profile", backref="certifications")
+    profile = relationship("Profile", back_populates="certifications")
 
 
 class Award(CRUDMixin, Base):
@@ -192,7 +204,7 @@ class Award(CRUDMixin, Base):
     issuer = Column(String)
     date = Column(Date)
     description = Column(Text)
-    profile = relationship("Profile", backref="awards")
+    profile = relationship("Profile", back_populates="awards")
 
 
 class Publication(CRUDMixin, Base):
@@ -204,7 +216,7 @@ class Publication(CRUDMixin, Base):
     publication_date = Column(Date)
     url = Column(String)
     description = Column(Text)
-    profile = relationship("Profile", backref="publications")
+    profile = relationship("Profile", back_populates="publications")
 
 
 class Contact(CRUDMixin, Base):
@@ -215,7 +227,7 @@ class Contact(CRUDMixin, Base):
     phone = Column(String)
     website = Column(String)
     address = Column(String)
-    profile = relationship("Profile", backref="contacts")
+    profile = relationship("Profile", back_populates="contacts")
 
 
 class SocialLink(CRUDMixin, Base):
@@ -225,7 +237,7 @@ class SocialLink(CRUDMixin, Base):
     platform = Column(String)  # e.g., linkedin, github, twitter
     url = Column(String)
     username = Column(String)
-    profile = relationship("Profile", backref="social_links")
+    profile = relationship("Profile", back_populates="social_links")
 
 
 class PortfolioItem(CRUDMixin, Base):
@@ -238,7 +250,7 @@ class PortfolioItem(CRUDMixin, Base):
     screenshot_url = Column(String)
     skills = Column(ARRAY(String))
     display_order = Column(Integer, default=0)
-    profile = relationship("Profile", backref="portfolio_items")
+    profile = relationship("Profile", back_populates="portfolio_items")
 
 
 class Reference(CRUDMixin, Base):
@@ -249,7 +261,7 @@ class Reference(CRUDMixin, Base):
     relation = Column("relationship", String)
     contact_info = Column(String)
     testimonial = Column(Text)
-    profile = relationship("Profile", backref="references")
+    profile = relationship("Profile", back_populates="references")
 
 
 class Skill(CRUDMixin, Base):
@@ -259,4 +271,4 @@ class Skill(CRUDMixin, Base):
     name = Column(String, nullable=False)
     proficiency = Column(Integer)  # optional 1-5 scale
     years = Column(Float)  # optional years of experience
-    profile = relationship("Profile", backref="skill_items")
+    profile = relationship("Profile", back_populates="skill_items")
