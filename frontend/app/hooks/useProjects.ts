@@ -1,6 +1,7 @@
 import type { ProjectCreate, ProjectRead } from "@/app/types/project";
 
-const BASE = "/api/projects";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/projects`;
 
 export const useGetProjects = async (): Promise<ProjectRead[]> => {
   const res = await fetch(BASE);

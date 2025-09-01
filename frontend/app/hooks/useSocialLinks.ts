@@ -1,5 +1,6 @@
 import type { SocialLinkCreate, SocialLinkRead } from "@/app/types/socialLink";
-const BASE = "/api/social-links";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/social-links`;
 
 export const useGetSocialLinks = async (): Promise<SocialLinkRead[]> =>
   (await fetch(BASE)).json();

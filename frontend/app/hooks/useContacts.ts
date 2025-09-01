@@ -1,5 +1,6 @@
 import type { ContactCreate, ContactRead } from "@/app/types/contact";
-const BASE = "/api/contacts";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/contacts`;
 
 export const useGetContacts = async (): Promise<ContactRead[]> =>
   (await fetch(BASE)).json();

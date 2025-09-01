@@ -2,7 +2,8 @@ import type {
   PortfolioItemCreate,
   PortfolioItemRead,
 } from "@/app/types/portfolioItem";
-const BASE = "/api/portfolio-items";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/portfolio-items`;
 
 export const useGetPortfolioItems = async (): Promise<PortfolioItemRead[]> =>
   (await fetch(BASE)).json();

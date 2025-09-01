@@ -1,5 +1,6 @@
 import type { EducationCreate, EducationRead } from "@/app/types/education";
-const BASE = "/api/educations";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/educations`;
 
 export const useGetEducations = async (): Promise<EducationRead[]> =>
   (await fetch(BASE)).json();

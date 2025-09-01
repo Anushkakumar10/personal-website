@@ -2,7 +2,8 @@ import type {
   CertificationCreate,
   CertificationRead,
 } from "@/app/types/certification";
-const BASE = "/api/certifications";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/certifications`;
 
 export const useGetCertifications = async (): Promise<CertificationRead[]> =>
   (await fetch(BASE)).json();

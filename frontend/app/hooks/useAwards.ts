@@ -1,5 +1,6 @@
 import type { AwardCreate, AwardRead } from "@/app/types/award";
-const BASE = "/api/awards";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/awards`;
 
 export const useGetAwards = async (): Promise<AwardRead[]> =>
   (await fetch(BASE)).json();

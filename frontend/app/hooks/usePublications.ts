@@ -2,7 +2,8 @@ import type {
   PublicationCreate,
   PublicationRead,
 } from "@/app/types/publication";
-const BASE = "/api/publications";
+const API_ROOT = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const BASE = `${API_ROOT}/api/publications`;
 
 export const useGetPublications = async (): Promise<PublicationRead[]> =>
   (await fetch(BASE)).json();
