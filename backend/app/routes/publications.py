@@ -11,14 +11,22 @@ from ..services import publications as publications_service
 router = APIRouter()
 
 
-@router.get("/publications", response_model=List[schemas.PublicationRead])
+@router.get(
+    "/publications",
+    response_model=List[schemas.PublicationRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_publications(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await publications_service.list_publications(profile_id, session)
 
 
-@router.post("/publications", response_model=schemas.PublicationRead)
+@router.post(
+    "/publications",
+    response_model=schemas.PublicationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_publication(
     item: schemas.PublicationCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_publication(
     return await publications_service.create_publication(data, session)
 
 
-@router.get("/publications/{pub_id}", response_model=schemas.PublicationRead)
+@router.get(
+    "/publications/{pub_id}",
+    response_model=schemas.PublicationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_publication(
     pub_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_publication(
     return instance
 
 
-@router.put("/publications/{pub_id}", response_model=schemas.PublicationRead)
+@router.put(
+    "/publications/{pub_id}",
+    response_model=schemas.PublicationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_publication(
     pub_id: int,
     item: schemas.PublicationCreate,
@@ -51,7 +67,10 @@ async def update_publication(
     return instance
 
 
-@router.delete("/publications/{pub_id}")
+@router.delete(
+    "/publications/{pub_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_publication(pub_id: int, session: AsyncSession = Depends(get_db)):
     ok = await publications_service.delete_publication(pub_id, session)
     if not ok:

@@ -250,3 +250,7 @@ class ProfileRead(ProfileBase):
 
     class Config:
         orm_mode = True
+
+
+class ErrorResponse(BaseModel):
+    detail: str

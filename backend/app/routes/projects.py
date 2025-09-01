@@ -11,7 +11,11 @@ from ..services import projects as projects_service
 router = APIRouter()
 
 
-@router.get("/projects", response_model=List[schemas.ProjectRead])
+@router.get(
+    "/projects",
+    response_model=List[schemas.ProjectRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_projects(
     profile_id: int = Query(None, gt=0),
     skill: Optional[str] = Query(None),
@@ -20,7 +24,11 @@ async def list_projects(
     return await projects_service.list_projects(profile_id, skill, session)
 
 
-@router.post("/projects", response_model=schemas.ProjectRead)
+@router.post(
+    "/projects",
+    response_model=schemas.ProjectRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_project(
     project: schemas.ProjectCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -28,7 +36,11 @@ async def create_project(
     return await projects_service.create_project(data, session)
 
 
-@router.get("/projects/{project_id}", response_model=schemas.ProjectRead)
+@router.get(
+    "/projects/{project_id}",
+    response_model=schemas.ProjectRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_project(
     project_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -39,7 +51,11 @@ async def get_project(
     return instance
 
 
-@router.put("/projects/{project_id}", response_model=schemas.ProjectRead)
+@router.put(
+    "/projects/{project_id}",
+    response_model=schemas.ProjectRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_project(
     project_id: int,
     project: schemas.ProjectCreate,
@@ -53,7 +69,10 @@ async def update_project(
     return instance
 
 
-@router.delete("/projects/{project_id}")
+@router.delete(
+    "/projects/{project_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_project(project_id: int, session: AsyncSession = Depends(get_db)):
     ok = await projects_service.delete_project(project_id, session)
     if not ok:

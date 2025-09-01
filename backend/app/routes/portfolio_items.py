@@ -11,14 +11,22 @@ from ..services import portfolio_items as portfolio_items_service
 router = APIRouter()
 
 
-@router.get("/portfolio-items", response_model=List[schemas.PortfolioItemRead])
+@router.get(
+    "/portfolio-items",
+    response_model=List[schemas.PortfolioItemRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_portfolio_items(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await portfolio_items_service.list_portfolio_items(profile_id, session)
 
 
-@router.post("/portfolio-items", response_model=schemas.PortfolioItemRead)
+@router.post(
+    "/portfolio-items",
+    response_model=schemas.PortfolioItemRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_portfolio_item(
     item: schemas.PortfolioItemCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_portfolio_item(
     return await portfolio_items_service.create_portfolio_item(data, session)
 
 
-@router.get("/portfolio-items/{item_id}", response_model=schemas.PortfolioItemRead)
+@router.get(
+    "/portfolio-items/{item_id}",
+    response_model=schemas.PortfolioItemRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_portfolio_item(
     item_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_portfolio_item(
     return instance
 
 
-@router.put("/portfolio-items/{item_id}", response_model=schemas.PortfolioItemRead)
+@router.put(
+    "/portfolio-items/{item_id}",
+    response_model=schemas.PortfolioItemRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_portfolio_item(
     item_id: int,
     item: schemas.PortfolioItemCreate,
@@ -53,7 +69,10 @@ async def update_portfolio_item(
     return instance
 
 
-@router.delete("/portfolio-items/{item_id}")
+@router.delete(
+    "/portfolio-items/{item_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_portfolio_item(item_id: int, session: AsyncSession = Depends(get_db)):
     ok = await portfolio_items_service.delete_portfolio_item(item_id, session)
     if not ok:

@@ -11,14 +11,22 @@ from ..services import educations as educations_service
 router = APIRouter()
 
 
-@router.get("/educations", response_model=List[schemas.EducationRead])
+@router.get(
+    "/educations",
+    response_model=List[schemas.EducationRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_educations(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await educations_service.list_educations(profile_id, session)
 
 
-@router.post("/educations", response_model=schemas.EducationRead)
+@router.post(
+    "/educations",
+    response_model=schemas.EducationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_education(
     item: schemas.EducationCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_education(
     return await educations_service.create_education(data, session)
 
 
-@router.get("/educations/{education_id}", response_model=schemas.EducationRead)
+@router.get(
+    "/educations/{education_id}",
+    response_model=schemas.EducationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_education(
     education_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_education(
     return instance
 
 
-@router.put("/educations/{education_id}", response_model=schemas.EducationRead)
+@router.put(
+    "/educations/{education_id}",
+    response_model=schemas.EducationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_education(
     education_id: int,
     item: schemas.EducationCreate,
@@ -51,7 +67,10 @@ async def update_education(
     return instance
 
 
-@router.delete("/educations/{education_id}")
+@router.delete(
+    "/educations/{education_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_education(education_id: int, session: AsyncSession = Depends(get_db)):
     ok = await educations_service.delete_education(education_id, session)
     if not ok:

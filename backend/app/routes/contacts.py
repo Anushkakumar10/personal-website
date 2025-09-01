@@ -11,14 +11,22 @@ from ..services import contacts as contacts_service
 router = APIRouter()
 
 
-@router.get("/contacts", response_model=List[schemas.ContactRead])
+@router.get(
+    "/contacts",
+    response_model=List[schemas.ContactRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_contacts(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await contacts_service.list_contacts(profile_id, session)
 
 
-@router.post("/contacts", response_model=schemas.ContactRead)
+@router.post(
+    "/contacts",
+    response_model=schemas.ContactRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_contact(
     item: schemas.ContactCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_contact(
     return await contacts_service.create_contact(data, session)
 
 
-@router.get("/contacts/{contact_id}", response_model=schemas.ContactRead)
+@router.get(
+    "/contacts/{contact_id}",
+    response_model=schemas.ContactRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_contact(
     contact_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_contact(
     return instance
 
 
-@router.put("/contacts/{contact_id}", response_model=schemas.ContactRead)
+@router.put(
+    "/contacts/{contact_id}",
+    response_model=schemas.ContactRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_contact(
     contact_id: int,
     item: schemas.ContactCreate,
@@ -51,7 +67,10 @@ async def update_contact(
     return instance
 
 
-@router.delete("/contacts/{contact_id}")
+@router.delete(
+    "/contacts/{contact_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_contact(contact_id: int, session: AsyncSession = Depends(get_db)):
     ok = await contacts_service.delete_contact(contact_id, session)
     if not ok:

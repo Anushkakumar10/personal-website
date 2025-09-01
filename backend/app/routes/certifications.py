@@ -11,14 +11,22 @@ from ..services import certifications as certifications_service
 router = APIRouter()
 
 
-@router.get("/certifications", response_model=List[schemas.CertificationRead])
+@router.get(
+    "/certifications",
+    response_model=List[schemas.CertificationRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_certifications(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await certifications_service.list_certifications(profile_id, session)
 
 
-@router.post("/certifications", response_model=schemas.CertificationRead)
+@router.post(
+    "/certifications",
+    response_model=schemas.CertificationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_certification(
     item: schemas.CertificationCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_certification(
     return await certifications_service.create_certification(data, session)
 
 
-@router.get("/certifications/{cert_id}", response_model=schemas.CertificationRead)
+@router.get(
+    "/certifications/{cert_id}",
+    response_model=schemas.CertificationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_certification(
     cert_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_certification(
     return instance
 
 
-@router.put("/certifications/{cert_id}", response_model=schemas.CertificationRead)
+@router.put(
+    "/certifications/{cert_id}",
+    response_model=schemas.CertificationRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_certification(
     cert_id: int,
     item: schemas.CertificationCreate,
@@ -51,7 +67,10 @@ async def update_certification(
     return instance
 
 
-@router.delete("/certifications/{cert_id}")
+@router.delete(
+    "/certifications/{cert_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_certification(cert_id: int, session: AsyncSession = Depends(get_db)):
     ok = await certifications_service.delete_certification(cert_id, session)
     if not ok:

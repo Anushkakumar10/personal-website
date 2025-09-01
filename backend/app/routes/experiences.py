@@ -11,14 +11,22 @@ from ..services import experiences as experiences_service
 router = APIRouter()
 
 
-@router.get("/experiences", response_model=List[schemas.ExperienceRead])
+@router.get(
+    "/experiences",
+    response_model=List[schemas.ExperienceRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_experiences(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
     return await experiences_service.list_experiences(profile_id, session)
 
 
-@router.post("/experiences", response_model=schemas.ExperienceRead)
+@router.post(
+    "/experiences",
+    response_model=schemas.ExperienceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_experience(
     item: schemas.ExperienceCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -26,7 +34,11 @@ async def create_experience(
     return await experiences_service.create_experience(data, session)
 
 
-@router.get("/experiences/{experience_id}", response_model=schemas.ExperienceRead)
+@router.get(
+    "/experiences/{experience_id}",
+    response_model=schemas.ExperienceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_experience(
     experience_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -37,7 +49,11 @@ async def get_experience(
     return instance
 
 
-@router.put("/experiences/{experience_id}", response_model=schemas.ExperienceRead)
+@router.put(
+    "/experiences/{experience_id}",
+    response_model=schemas.ExperienceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_experience(
     experience_id: int,
     item: schemas.ExperienceCreate,
@@ -51,7 +67,10 @@ async def update_experience(
     return instance
 
 
-@router.delete("/experiences/{experience_id}")
+@router.delete(
+    "/experiences/{experience_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_experience(
     experience_id: int, session: AsyncSession = Depends(get_db)
 ):

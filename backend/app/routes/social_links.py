@@ -11,7 +11,11 @@ from ..services import social_links as social_links_service
 router = APIRouter()
 
 
-@router.get("/social-links", response_model=List[schemas.SocialLinkRead])
+@router.get(
+    "/social-links",
+    response_model=List[schemas.SocialLinkRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_social_links(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -19,7 +23,11 @@ async def list_social_links(
     return await social_links_service.list_social_links(profile_id, session)
 
 
-@router.post("/social-links", response_model=schemas.SocialLinkRead)
+@router.post(
+    "/social-links",
+    response_model=schemas.SocialLinkRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_social_link(
     item: schemas.SocialLinkCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -28,7 +36,11 @@ async def create_social_link(
     return await social_links_service.create_social_link(data, session)
 
 
-@router.get("/social-links/{link_id}", response_model=schemas.SocialLinkRead)
+@router.get(
+    "/social-links/{link_id}",
+    response_model=schemas.SocialLinkRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_social_link(
     link_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -40,7 +52,11 @@ async def get_social_link(
     return instance
 
 
-@router.put("/social-links/{link_id}", response_model=schemas.SocialLinkRead)
+@router.put(
+    "/social-links/{link_id}",
+    response_model=schemas.SocialLinkRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_social_link(
     link_id: int,
     item: schemas.SocialLinkCreate,
@@ -55,7 +71,10 @@ async def update_social_link(
     return instance
 
 
-@router.delete("/social-links/{link_id}")
+@router.delete(
+    "/social-links/{link_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_social_link(link_id: int, session: AsyncSession = Depends(get_db)):
     logger.info("Deleting social link id=%s", link_id)
     ok = await social_links_service.delete_social_link(link_id, session)

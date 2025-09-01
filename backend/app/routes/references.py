@@ -11,7 +11,11 @@ from ..services import references as references_service
 router = APIRouter()
 
 
-@router.get("/references", response_model=List[schemas.ReferenceRead])
+@router.get(
+    "/references",
+    response_model=List[schemas.ReferenceRead],
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def list_references(
     profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -19,7 +23,11 @@ async def list_references(
     return await references_service.list_references(profile_id, session)
 
 
-@router.post("/references", response_model=schemas.ReferenceRead)
+@router.post(
+    "/references",
+    response_model=schemas.ReferenceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def create_reference(
     item: schemas.ReferenceCreate, session: AsyncSession = Depends(get_db)
 ):
@@ -28,7 +36,11 @@ async def create_reference(
     return await references_service.create_reference(data, session)
 
 
-@router.get("/references/{ref_id}", response_model=schemas.ReferenceRead)
+@router.get(
+    "/references/{ref_id}",
+    response_model=schemas.ReferenceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def get_reference(
     ref_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
 ):
@@ -40,7 +52,11 @@ async def get_reference(
     return instance
 
 
-@router.put("/references/{ref_id}", response_model=schemas.ReferenceRead)
+@router.put(
+    "/references/{ref_id}",
+    response_model=schemas.ReferenceRead,
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def update_reference(
     ref_id: int,
     item: schemas.ReferenceCreate,
@@ -55,7 +71,10 @@ async def update_reference(
     return instance
 
 
-@router.delete("/references/{ref_id}")
+@router.delete(
+    "/references/{ref_id}",
+    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+)
 async def delete_reference(ref_id: int, session: AsyncSession = Depends(get_db)):
     logger.info("Deleting reference id=%s", ref_id)
     ok = await references_service.delete_reference(ref_id, session)
