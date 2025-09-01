@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Profile — Details",
-  description: "A clean, modern profile details page",
+  title: "Anushka Kumar",
+  description: "Portfolio website of Anushka Kumar",
 };
 
 export default function RootLayout({

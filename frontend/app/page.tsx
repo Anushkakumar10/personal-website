@@ -145,27 +145,27 @@ export default async function Home(): Promise<JSX.Element> {
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       {/* Header Section */}
-      <header className="bg-[var(--card)] border-b border-[var(--border)] sticky top-0 z-10 backdrop-blur-sm bg-opacity-90">
+      <header className="bg-[var(--card)] border-b border-[var(--border)] sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center gap-6 animate-fade-in-up">
+          <div className="flex items-center gap-6">
             <div className="relative flex-none">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 shadow-lg flex items-center justify-center transition-all duration-300 hover:shadow-xl hover:scale-105 focus-ring status-indicator">
+              <div className="w-20 h-20 rounded-xl bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center focus-ring">
                 <Image
                   src="/next.svg"
                   alt="Profile avatar"
-                  width={48}
-                  height={48}
-                  className="dark:invert transition-transform duration-300"
+                  width={40}
+                  height={40}
+                  className="dark:invert"
                 />
               </div>
             </div>
 
             <div className="flex-1 min-w-0">
-              <h1 className="text-4xl font-bold tracking-tight text-[var(--foreground)] mb-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-[var(--foreground)] mb-1.5">
                 {profile ? profile.name : "No profile found"}
               </h1>
-              <div className="flex items-center gap-4 text-[var(--muted-foreground)] mb-3">
-                <span className="text-lg font-medium text-[var(--primary)]">
+              <div className="flex items-center gap-3 text-[var(--muted-foreground)] mb-2">
+                <span className="text-base font-medium text-[var(--foreground)]">
                   {profile?.title ?? "Software Engineer"}
                 </span>
                 {profile?.location && (
@@ -180,14 +180,17 @@ export default async function Home(): Promise<JSX.Element> {
               </div>
               <p className="text-[var(--muted-foreground)] max-w-3xl leading-relaxed">
                 {profile?.summary ??
-                  "A passionate developer focused on creating exceptional user experiences and solving complex problems through clean, efficient code."}
+                  "A developer focused on creating reliable, efficient solutions with thoughtful UX."}
               </p>
             </div>
 
-            <div className="flex-none flex gap-3 animate-slide-in-right">
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 focus-ring animate-pulse-ring">
+            <div className="flex-none">
+              <button
+                aria-label="Share profile"
+                className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-transparent text-[var(--foreground)] hover:bg-[var(--muted)] focus-ring"
+              >
                 <IconShare />
-                Share Profile
+                <span className="text-sm font-medium">Share</span>
               </button>
             </div>
           </div>
@@ -196,59 +199,53 @@ export default async function Home(): Promise<JSX.Element> {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Quick Stats Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover focus-ring">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
-                Experience
-              </h3>
-              <div className="w-2 h-2 bg-[var(--success)] rounded-full"></div>
-            </div>
-            <div className="text-2xl font-bold text-[var(--foreground)]">
+        <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-[var(--card)] rounded-xl p-5 border border-[var(--border)]">
+            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+              Experience
+            </h3>
+            <div className="mt-1.5 text-2xl font-semibold text-[var(--foreground)]">
               {profile?.experiences?.length ?? 0}
             </div>
-            <p className="text-sm text-[var(--muted-foreground)]">Roles</p>
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+              Roles
+            </p>
           </div>
 
-          <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover focus-ring">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
-                Projects
-              </h3>
-              <div className="w-2 h-2 bg-[var(--primary)] rounded-full"></div>
-            </div>
-            <div className="text-2xl font-bold text-[var(--foreground)]">
+          <div className="bg-[var(--card)] rounded-xl p-5 border border-[var(--border)]">
+            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+              Projects
+            </h3>
+            <div className="mt-1.5 text-2xl font-semibold text-[var(--foreground)]">
               {profile?.projects?.length ?? 0}
             </div>
-            <p className="text-sm text-[var(--muted-foreground)]">Completed</p>
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+              Completed
+            </p>
           </div>
 
-          <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover focus-ring">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
-                Skills
-              </h3>
-              <div className="w-2 h-2 bg-[var(--warning)] rounded-full"></div>
-            </div>
-            <div className="text-2xl font-bold text-[var(--foreground)]">
+          <div className="bg-[var(--card)] rounded-xl p-5 border border-[var(--border)]">
+            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+              Skills
+            </h3>
+            <div className="mt-1.5 text-2xl font-semibold text-[var(--foreground)]">
               {profile?.skill_items?.length ?? profile?.skills?.length ?? 0}
             </div>
-            <p className="text-sm text-[var(--muted-foreground)]">
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
               Technologies
             </p>
           </div>
 
-          <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover focus-ring">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
-                Education
-              </h3>
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-            </div>
-            <div className="text-2xl font-bold text-[var(--foreground)]">
+          <div className="bg-[var(--card)] rounded-xl p-5 border border-[var(--border)]">
+            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+              Education
+            </h3>
+            <div className="mt-1.5 text-2xl font-semibold text-[var(--foreground)]">
               {profile?.educations?.length ?? 0}
             </div>
-            <p className="text-sm text-[var(--muted-foreground)]">Degrees</p>
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+              Degrees
+            </p>
           </div>
         </section>
 
@@ -257,12 +254,12 @@ export default async function Home(): Promise<JSX.Element> {
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
             {/* Experience Section */}
-            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)] card-hover">
+            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)]">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[var(--foreground)]">
+                <h2 className="text-xl font-semibold text-[var(--foreground)]">
                   Experience
                 </h2>
-                <span className="text-sm text-[var(--muted-foreground)] bg-[var(--muted)] px-3 py-1 rounded-full">
+                <span className="text-xs text-[var(--muted-foreground)] bg-[var(--muted)] px-2.5 py-1 rounded-full">
                   {profile?.experiences?.length ?? 0} roles
                 </span>
               </div>
@@ -272,23 +269,22 @@ export default async function Home(): Promise<JSX.Element> {
                   profile.experiences.map((e) => (
                     <article
                       key={e.id}
-                      className="relative p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200 group"
+                      className="p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)]"
                     >
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--primary)] rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-
-                      <div className="flex items-start justify-between gap-4 mb-4">
+                      {/* removed decorative left accent */}
+                      <div className="flex items-start justify-between gap-4 mb-3">
                         <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-[var(--foreground)] mb-1">
+                          <h3 className="text-lg font-medium text-[var(--foreground)]">
                             {e.role}
                           </h3>
-                          <div className="flex items-center gap-2 text-[var(--primary)] font-medium mb-2">
-                            <span>{e.company}</span>
+                          <div className="flex items-center gap-2 text-[var(--muted-foreground)] mt-1">
+                            <span className="text-[var(--foreground)] font-medium">
+                              {e.company}
+                            </span>
                             {e.location && (
                               <>
                                 <span className="text-[var(--border)]">•</span>
-                                <span className="text-[var(--muted-foreground)]">
-                                  {e.location}
-                                </span>
+                                <span>{e.location}</span>
                               </>
                             )}
                           </div>
@@ -299,17 +295,17 @@ export default async function Home(): Promise<JSX.Element> {
                       </div>
 
                       {e.description && (
-                        <p className="text-[var(--muted-foreground)] mb-4 leading-relaxed">
+                        <p className="text-[var(--muted-foreground)] leading-relaxed">
                           {e.description}
                         </p>
                       )}
 
                       {e.skills?.length ? (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 mt-4">
                           {e.skills.map((skill, i) => (
                             <span
                               key={i}
-                              className="px-3 py-1 text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded-full skill-badge transition-all duration-200 hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]"
+                              className="px-2.5 py-1 text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded-full"
                             >
                               {skill}
                             </span>
@@ -319,18 +315,7 @@ export default async function Home(): Promise<JSX.Element> {
                     </article>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-[var(--muted-foreground)]">
-                    <div className="w-16 h-16 bg-[var(--muted)] rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M20 6L9 17l-5-5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
+                  <div className="text-center py-10 text-[var(--muted-foreground)]">
                     <p>No experience entries yet</p>
                   </div>
                 )}
@@ -338,12 +323,12 @@ export default async function Home(): Promise<JSX.Element> {
             </section>
 
             {/* Projects Section */}
-            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)] card-hover">
+            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)]">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[var(--foreground)]">
+                <h2 className="text-xl font-semibold text-[var(--foreground)]">
                   Projects
                 </h2>
-                <span className="text-sm text-[var(--muted-foreground)] bg-[var(--muted)] px-3 py-1 rounded-full">
+                <span className="text-xs text-[var(--muted-foreground)] bg-[var(--muted)] px-2.5 py-1 rounded-full">
                   {profile?.projects?.length ?? 0} projects
                 </span>
               </div>
@@ -353,14 +338,14 @@ export default async function Home(): Promise<JSX.Element> {
                   profile.projects.map((p) => (
                     <div
                       key={p.id}
-                      className="p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200 group card-hover"
+                      className="p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)]"
                     >
-                      <div className="flex items-start justify-between mb-3">
-                        <h3 className="font-semibold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-medium text-[var(--foreground)]">
                           {p.title}
                         </h3>
                         {p.skills?.length ? (
-                          <span className="text-xs text-[var(--muted-foreground)] bg-[var(--secondary)] px-2 py-1 rounded-md">
+                          <span className="text-[10px] text-[var(--muted-foreground)] bg-[var(--secondary)] px-2 py-0.5 rounded">
                             {p.skills.length} skills
                           </span>
                         ) : null}
@@ -373,17 +358,17 @@ export default async function Home(): Promise<JSX.Element> {
                       )}
 
                       {p.skills?.length ? (
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           {p.skills.slice(0, 3).map((skill, i) => (
                             <span
                               key={i}
-                              className="text-xs px-2 py-1 bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded-md"
+                              className="text-xs px-2 py-1 bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded"
                             >
                               {skill}
                             </span>
                           ))}
                           {p.skills.length > 3 && (
-                            <span className="text-xs px-2 py-1 bg-[var(--muted)] text-[var(--muted-foreground)] rounded-md">
+                            <span className="text-xs px-2 py-1 bg-[var(--muted)] text-[var(--muted-foreground)] rounded">
                               +{p.skills.length - 3} more
                             </span>
                           )}
@@ -392,18 +377,7 @@ export default async function Home(): Promise<JSX.Element> {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-2 text-center py-12 text-[var(--muted-foreground)]">
-                    <div className="w-16 h-16 bg-[var(--muted)] rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
+                  <div className="col-span-2 text-center py-10 text-[var(--muted-foreground)]">
                     <p>No projects to showcase yet</p>
                   </div>
                 )}
@@ -411,12 +385,12 @@ export default async function Home(): Promise<JSX.Element> {
             </section>
 
             {/* Education Section */}
-            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)] card-hover">
+            <section className="bg-[var(--card)] rounded-2xl p-8 border border-[var(--border)]">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[var(--foreground)]">
+                <h2 className="text-xl font-semibold text-[var(--foreground)]">
                   Education
                 </h2>
-                <span className="text-sm text-[var(--muted-foreground)] bg-[var(--muted)] px-3 py-1 rounded-full">
+                <span className="text-xs text-[var(--muted-foreground)] bg-[var(--muted)] px-2.5 py-1 rounded-full">
                   {profile?.educations?.length ?? 0} degrees
                 </span>
               </div>
@@ -426,22 +400,22 @@ export default async function Home(): Promise<JSX.Element> {
                   profile.educations.map((ed) => (
                     <div
                       key={ed.id}
-                      className="p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)] hover:border-[var(--primary)] transition-all duration-200"
+                      className="p-6 rounded-xl bg-[var(--muted)] border border-[var(--border)]"
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <div>
-                          <h3 className="font-semibold text-[var(--foreground)]">
+                          <h3 className="font-medium text-[var(--foreground)]">
                             {ed.institution}
                           </h3>
-                          <p className="text-[var(--primary)] font-medium">
+                          <p className="text-[var(--muted-foreground)]">
                             {ed.degree ?? ed.field_of_study}
                           </p>
                         </div>
                         <div className="text-right text-[var(--muted-foreground)]">
-                          <div className="font-medium">
+                          <div className="text-sm">
                             {ed.start_date
                               ? new Date(ed.start_date).getFullYear()
-                              : ""}{" "}
+                              : "—"}{" "}
                             —{" "}
                             {ed.end_date
                               ? new Date(ed.end_date).getFullYear()
@@ -458,25 +432,7 @@ export default async function Home(): Promise<JSX.Element> {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-[var(--muted-foreground)]">
-                    <div className="w-16 h-16 bg-[var(--muted)] rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M22 10v6M2 10l10-5 10 5-10 5z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M6 12v5c3 3 9 3 12 0v-5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
+                  <div className="text-center py-10 text-[var(--muted-foreground)]">
                     <p>No education entries</p>
                   </div>
                 )}
@@ -487,19 +443,19 @@ export default async function Home(): Promise<JSX.Element> {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Contact Information */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 Contact
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {profile?.contacts?.map((c) => (
-                  <div key={c.id} className="group">
+                  <div key={c.id}>
                     {c.email && (
                       <a
                         href={`mailto:${c.email}`}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors duration-200 focus-ring group"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                       >
-                        <div className="w-8 h-8 bg-[var(--primary)] bg-opacity-10 rounded-lg flex items-center justify-center text-[var(--primary)]">
+                        <div className="w-8 h-8 bg-[var(--muted)] border border-[var(--border)] rounded-lg flex items-center justify-center text-[var(--muted-foreground)]">
                           <IconEmail />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -516,9 +472,9 @@ export default async function Home(): Promise<JSX.Element> {
                     {c.phone && (
                       <a
                         href={`tel:${c.phone}`}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors duration-200 focus-ring group"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                       >
-                        <div className="w-8 h-8 bg-[var(--success)] bg-opacity-10 rounded-lg flex items-center justify-center text-[var(--success)]">
+                        <div className="w-8 h-8 bg-[var(--muted)] border border-[var(--border)] rounded-lg flex items-center justify-center text-[var(--muted-foreground)]">
                           <IconPhone />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -537,9 +493,9 @@ export default async function Home(): Promise<JSX.Element> {
                         href={c.website}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors duration-200 focus-ring group"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                       >
-                        <div className="w-8 h-8 bg-[var(--warning)] bg-opacity-10 rounded-lg flex items-center justify-center text-[var(--warning)]">
+                        <div className="w-8 h-8 bg-[var(--muted)] border border-[var(--border)] rounded-lg flex items-center justify-center text-[var(--muted-foreground)]">
                           <IconExternal />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -564,8 +520,8 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             {/* Skills */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 Skills
               </h3>
               <div className="space-y-4">
@@ -590,7 +546,7 @@ export default async function Home(): Promise<JSX.Element> {
                     {profile.skills.map((s, i) => (
                       <span
                         key={i}
-                        className="px-3 py-1.5 text-sm font-medium bg-[var(--muted)] text-[var(--foreground)] rounded-lg skill-badge hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition-all duration-200"
+                        className="px-2.5 py-1.5 text-sm font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded-lg"
                       >
                         {s}
                       </span>
@@ -605,8 +561,8 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             {/* Social Links */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 Social
               </h3>
               <div className="space-y-2">
@@ -616,9 +572,9 @@ export default async function Home(): Promise<JSX.Element> {
                     href={s.url ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-all duration-200 focus-ring group"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-[var(--primary)] to-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center text-[var(--muted-foreground)] text-xs font-semibold">
                       {(s.platform ?? s.username ?? "L")
                         .charAt(0)
                         .toUpperCase()}
@@ -644,8 +600,8 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             {/* Portfolio */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 Portfolio
               </h3>
               <div className="space-y-3">
@@ -655,9 +611,9 @@ export default async function Home(): Promise<JSX.Element> {
                     href={item.url ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-all duration-200 focus-ring group"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                   >
-                    <div className="w-12 h-8 rounded-lg bg-[var(--muted)] flex-none overflow-hidden flex items-center justify-center">
+                    <div className="w-12 h-8 rounded-lg bg-[var(--muted)] border border-[var(--border)] flex-none overflow-hidden flex items-center justify-center">
                       {item.screenshot_url ? (
                         <Image
                           src={item.screenshot_url}
@@ -682,9 +638,7 @@ export default async function Home(): Promise<JSX.Element> {
                         </div>
                       )}
                     </div>
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      <IconExternal />
-                    </div>
+                    <IconExternal />
                   </a>
                 ))}
 
@@ -697,8 +651,8 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             {/* Publications */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 Publications
               </h3>
               <div className="space-y-3">
@@ -708,7 +662,7 @@ export default async function Home(): Promise<JSX.Element> {
                     href={pub.url ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className="block p-3 rounded-lg hover:bg-[var(--muted)] transition-all duration-200 focus-ring group"
+                    className="block p-3 rounded-lg hover:bg-[var(--muted)] transition-colors focus-ring"
                   >
                     <div className="flex items-start gap-3">
                       <div className="text-xs text-[var(--muted-foreground)] font-mono pt-1">
@@ -717,7 +671,7 @@ export default async function Home(): Promise<JSX.Element> {
                           : "—"}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                        <div className="text-sm font-medium text-[var(--foreground)]">
                           {pub.title}
                         </div>
                         {pub.publisher && (
@@ -739,17 +693,20 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             {/* References */}
-            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)] card-hover">
-              <h3 className="text-lg font-semibold mb-4 text-[var(--foreground)]">
+            <div className="bg-[var(--card)] rounded-2xl p-6 border border-[var(--border)]">
+              <h3 className="text-base font-semibold mb-4 text-[var(--foreground)]">
                 References
               </h3>
               <div className="space-y-4">
                 {profile?.references?.map((r) => (
-                  <div key={r.id} className="p-3 rounded-lg bg-[var(--muted)]">
+                  <div
+                    key={r.id}
+                    className="p-3 rounded-lg bg-[var(--muted)] border border-[var(--border)]"
+                  >
                     <div className="font-medium text-[var(--foreground)] text-sm">
                       {r.name}
                     </div>
-                    <div className="text-xs text-[var(--primary)] font-medium mt-1">
+                    <div className="text-xs text-[var(--muted-foreground)] mt-1">
                       {r.relation}
                     </div>
                     {r.contact_info && (
