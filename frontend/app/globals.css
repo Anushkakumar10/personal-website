@@ -208,3 +208,48 @@ body {
     background-position: 200% 0;
   }
 }
+
+/* API Playground specific styles */
+.progress-bar {
+  transition: width 0.3s ease-out;
+}
+
+.status-dot {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.activity-item {
+  transition: background-color 0.15s ease;
+}
+
+.activity-item:hover {
+  background-color: var(--muted);
+}
+
+/* Enhanced button states for demo interactions */
+.demo-button {
+  transition: all 0.2s ease;
+}
+
+.demo-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.demo-button:active {
+  transform: translateY(0);
+}
+
+/* Real-time indicator pulse */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}

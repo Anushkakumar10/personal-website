@@ -185,13 +185,30 @@ export default async function Home(): Promise<JSX.Element> {
             </div>
 
             <div className="flex-none">
-              <button
-                aria-label="Share profile"
-                className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-transparent text-[var(--foreground)] hover:bg-[var(--muted)] focus-ring"
-              >
-                <IconShare />
-                <span className="text-sm font-medium">Share</span>
-              </button>
+              <div className="flex gap-2">
+                <a
+                  href="/api-playground"
+                  className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 focus-ring"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="text-sm font-medium">API Demo</span>
+                </a>
+                <button
+                  aria-label="Share profile"
+                  className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-transparent text-[var(--foreground)] hover:bg-[var(--muted)] focus-ring"
+                >
+                  <IconShare />
+                  <span className="text-sm font-medium">Share</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
