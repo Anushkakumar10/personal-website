@@ -151,11 +151,11 @@ export default async function Home(): Promise<JSX.Element> {
             <div className="relative flex-none">
               <div className="w-20 h-20 rounded-xl bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center focus-ring">
                 <Image
-                  src="/next.svg"
+                  src="/profile-photo.png"
                   alt="Profile avatar"
-                  width={40}
-                  height={40}
-                  className="dark:invert"
+                  width={80}
+                  height={80}
+                  className="rounded-xl"
                 />
               </div>
             </div>
