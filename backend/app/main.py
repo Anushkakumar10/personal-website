@@ -1,7 +1,14 @@
+import sys
+from pathlib import Path
+
+_project_root = Path(__file__).resolve().parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
 from fastapi import FastAPI
 
-from .routes import routers
-from .logger import logger
+from app.routes import routers
+from app.logger import logger
 
 app = FastAPI(title="Backend API")
 

@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import schemas
-from ..db import get_db
-from ..logger import logger
-from ..services import profile as profile_service
+from app.db import get_db
+from app.logger import logger
+from app.services import profile as profile_service
 
 router = APIRouter()
 

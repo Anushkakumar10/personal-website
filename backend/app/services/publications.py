@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import models
-from ..logger import logger
+from app.logger import logger
 
 
 async def list_publications(

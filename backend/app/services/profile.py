@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from .. import models
-from ..logger import logger
+from app.logger import logger
 
 
 async def get_profile(profile_id: int, session: AsyncSession) -> Optional[dict]:

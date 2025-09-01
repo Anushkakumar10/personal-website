@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import schemas
-from ..db import get_db
-from ..services import skills as skills_service
+from app.db import get_db
+from app.services import skills as skills_service
 
 router = APIRouter()
 

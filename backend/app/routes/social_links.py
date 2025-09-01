@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import schemas
-from ..db import get_db
-from ..logger import logger
-from ..services import social_links as social_links_service
+from app.db import get_db
+from app.logger import logger
+from app.services import social_links as social_links_service
 
 router = APIRouter()
 
