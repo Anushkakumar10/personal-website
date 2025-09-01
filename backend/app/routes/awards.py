@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,19 +14,29 @@ router = APIRouter()
 @router.get(
     "/awards",
     response_model=List[schemas.AwardRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def list_awards(
     session: AsyncSession = Depends(get_db),
     profile_id: int = Query(None, gt=0),
+    page: int = Query(1, gt=0),
+    per_page: int = Query(20, gt=1, le=100),
 ):
-    return await awards_service.list_awards(profile_id, session)
+    return await awards_service.list_awards(
+        profile_id, page=page, per_page=per_page, session=session
+    )
 
 
 @router.post(
     "/awards",
     response_model=schemas.AwardRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def create_award(
     item: schemas.AwardCreate, session: AsyncSession = Depends(get_db)
@@ -38,7 +48,10 @@ async def create_award(
 @router.get(
     "/awards/{award_id}",
     response_model=schemas.AwardRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_award(
     award_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -53,7 +66,10 @@ async def get_award(
 @router.put(
     "/awards/{award_id}",
     response_model=schemas.AwardRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_award(
     award_id: int, item: schemas.AwardCreate, session: AsyncSession = Depends(get_db)
@@ -68,7 +84,10 @@ async def update_award(
 
 @router.delete(
     "/awards/{award_id}",
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def delete_award(award_id: int, session: AsyncSession = Depends(get_db)):
     ok = await awards_service.delete_award(award_id, session)

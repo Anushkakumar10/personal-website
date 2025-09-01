@@ -7,11 +7,23 @@ from app.logger import logger
 
 
 async def list_references(
-    profile_id: Optional[int], session: AsyncSession
+    profile_id: Optional[int],
+    page: int = 1,
+    per_page: int = 20,
+    session: AsyncSession = None,
 ) -> List[models.Reference]:
-    logger.info("Service: list_references (profile_id=%s)", profile_id)
+    logger.info(
+        "Service: list_references (profile_id=%s page=%s per_page=%s)",
+        profile_id,
+        page,
+        per_page,
+    )
     filters = [models.Reference.profile_id == profile_id] if profile_id else None
-    return await models.Reference.list(filters=filters, session=session)
+    limit = min(per_page, 100)
+    offset = (page - 1) * limit
+    return await models.Reference.list(
+        filters=filters, limit=limit, offset=offset, session=session
+    )
 
 
 async def create_reference(data: dict, session: AsyncSession) -> models.Reference:

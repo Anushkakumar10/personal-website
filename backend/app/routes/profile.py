@@ -12,7 +12,10 @@ router = APIRouter()
 @router.get(
     "/profiles/{profile_id}",
     response_model=schemas.ProfileRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_profile(
     profile_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -28,7 +31,10 @@ async def get_profile(
 @router.put(
     "/profiles/{profile_id}",
     response_model=schemas.ProfileRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_profile(
     profile: schemas.ProfileCreate,

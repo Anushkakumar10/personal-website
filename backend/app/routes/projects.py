@@ -14,20 +14,30 @@ router = APIRouter()
 @router.get(
     "/projects",
     response_model=List[schemas.ProjectRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def list_projects(
     profile_id: int = Query(None, gt=0),
     skill: Optional[str] = Query(None),
+    page: int = Query(1, gt=0),
+    per_page: int = Query(20, gt=1, le=100),
     session: AsyncSession = Depends(get_db),
 ):
-    return await projects_service.list_projects(profile_id, skill, session)
+    return await projects_service.list_projects(
+        profile_id, skill, page=page, per_page=per_page, session=session
+    )
 
 
 @router.post(
     "/projects",
     response_model=schemas.ProjectRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def create_project(
     project: schemas.ProjectCreate, session: AsyncSession = Depends(get_db)
@@ -39,7 +49,10 @@ async def create_project(
 @router.get(
     "/projects/{project_id}",
     response_model=schemas.ProjectRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_project(
     project_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -54,7 +67,10 @@ async def get_project(
 @router.put(
     "/projects/{project_id}",
     response_model=schemas.ProjectRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_project(
     project_id: int,
@@ -71,7 +87,10 @@ async def update_project(
 
 @router.delete(
     "/projects/{project_id}",
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def delete_project(project_id: int, session: AsyncSession = Depends(get_db)):
     ok = await projects_service.delete_project(project_id, session)

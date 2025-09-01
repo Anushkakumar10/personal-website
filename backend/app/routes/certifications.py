@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,18 +14,29 @@ router = APIRouter()
 @router.get(
     "/certifications",
     response_model=List[schemas.CertificationRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def list_certifications(
-    profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
+    profile_id: int = Query(None, gt=0),
+    page: int = Query(1, gt=0),
+    per_page: int = Query(20, gt=1, le=100),
+    session: AsyncSession = Depends(get_db),
 ):
-    return await certifications_service.list_certifications(profile_id, session)
+    return await certifications_service.list_certifications(
+        profile_id, page=page, per_page=per_page, session=session
+    )
 
 
 @router.post(
     "/certifications",
     response_model=schemas.CertificationRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def create_certification(
     item: schemas.CertificationCreate, session: AsyncSession = Depends(get_db)
@@ -37,7 +48,10 @@ async def create_certification(
 @router.get(
     "/certifications/{cert_id}",
     response_model=schemas.CertificationRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_certification(
     cert_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -52,7 +66,10 @@ async def get_certification(
 @router.put(
     "/certifications/{cert_id}",
     response_model=schemas.CertificationRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_certification(
     cert_id: int,
@@ -69,7 +86,10 @@ async def update_certification(
 
 @router.delete(
     "/certifications/{cert_id}",
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def delete_certification(cert_id: int, session: AsyncSession = Depends(get_db)):
     ok = await certifications_service.delete_certification(cert_id, session)

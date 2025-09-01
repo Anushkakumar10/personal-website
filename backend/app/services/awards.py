@@ -7,11 +7,23 @@ from app.logger import logger
 
 
 async def list_awards(
-    profile_id: Optional[int], session: AsyncSession
+    profile_id: Optional[int],
+    page: int = 1,
+    per_page: int = 20,
+    session: AsyncSession = None,
 ) -> List[models.Award]:
-    logger.info("Service: list_awards profile_id=%s", profile_id)
+    logger.info(
+        "Service: list_awards profile_id=%s page=%s per_page=%s",
+        profile_id,
+        page,
+        per_page,
+    )
     filters = [models.Award.profile_id == profile_id] if profile_id else None
-    return await models.Award.list(filters=filters, session=session)
+    limit = min(per_page, 100)
+    offset = (page - 1) * limit
+    return await models.Award.list(
+        filters=filters, limit=limit, offset=offset, session=session
+    )
 
 
 async def create_award(data: dict, session: AsyncSession):

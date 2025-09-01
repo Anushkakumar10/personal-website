@@ -7,16 +7,30 @@ from app.logger import logger
 
 
 async def list_projects(
-    profile_id: Optional[int], skill: Optional[str], session: AsyncSession
+    profile_id: Optional[int],
+    skill: Optional[str],
+    page: int = 1,
+    per_page: int = 20,
+    session: AsyncSession = None,
 ) -> List[models.Project]:
-    logger.info("Service: list_projects (skill=%s profile_id=%s)", skill, profile_id)
+    logger.info(
+        "Service: list_projects (skill=%s profile_id=%s page=%s per_page=%s)",
+        skill,
+        profile_id,
+        page,
+        per_page,
+    )
     filters = []
     if profile_id:
         filters.append(models.Project.profile_id == profile_id)
     if skill:
         # keep the original .any(skill) behavior
         filters.append(models.Project.skills.any(skill))
-    return await models.Project.list(filters=filters or None, session=session)
+    limit = min(per_page, 100)
+    offset = (page - 1) * limit
+    return await models.Project.list(
+        filters=filters or None, limit=limit, offset=offset, session=session
+    )
 
 
 async def create_project(data: dict, session: AsyncSession) -> models.Project:

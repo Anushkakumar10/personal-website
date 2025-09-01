@@ -7,11 +7,23 @@ from app.logger import logger
 
 
 async def list_experiences(
-    profile_id: Optional[int], session: AsyncSession
+    profile_id: Optional[int],
+    page: int = 1,
+    per_page: int = 20,
+    session: AsyncSession = None,
 ) -> List[models.Experience]:
-    logger.info("Service: list_experiences profile_id=%s", profile_id)
+    logger.info(
+        "Service: list_experiences profile_id=%s page=%s per_page=%s",
+        profile_id,
+        page,
+        per_page,
+    )
     filters = [models.Experience.profile_id == profile_id] if profile_id else None
-    return await models.Experience.list(filters=filters, session=session)
+    limit = min(per_page, 100)
+    offset = (page - 1) * limit
+    return await models.Experience.list(
+        filters=filters, limit=limit, offset=offset, session=session
+    )
 
 
 async def create_experience(data: dict, session: AsyncSession):

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,19 +14,35 @@ router = APIRouter()
 @router.get(
     "/social-links",
     response_model=List[schemas.SocialLinkRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def list_social_links(
-    profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
+    profile_id: int = Query(None, gt=0),
+    page: int = Query(1, gt=0),
+    per_page: int = Query(20, gt=1, le=100),
+    session: AsyncSession = Depends(get_db),
 ):
-    logger.info("Listing social links (profile_id=%s)", profile_id)
-    return await social_links_service.list_social_links(profile_id, session)
+    logger.info(
+        "Listing social links (profile_id=%s page=%s per_page=%s)",
+        profile_id,
+        page,
+        per_page,
+    )
+    return await social_links_service.list_social_links(
+        profile_id, page=page, per_page=per_page, session=session
+    )
 
 
 @router.post(
     "/social-links",
     response_model=schemas.SocialLinkRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def create_social_link(
     item: schemas.SocialLinkCreate, session: AsyncSession = Depends(get_db)
@@ -39,7 +55,10 @@ async def create_social_link(
 @router.get(
     "/social-links/{link_id}",
     response_model=schemas.SocialLinkRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_social_link(
     link_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -55,7 +74,10 @@ async def get_social_link(
 @router.put(
     "/social-links/{link_id}",
     response_model=schemas.SocialLinkRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_social_link(
     link_id: int,
@@ -73,7 +95,10 @@ async def update_social_link(
 
 @router.delete(
     "/social-links/{link_id}",
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def delete_social_link(link_id: int, session: AsyncSession = Depends(get_db)):
     logger.info("Deleting social link id=%s", link_id)

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,7 +13,10 @@ router = APIRouter()
 @router.get(
     "/skills/top",
     response_model=List[schemas.SkillRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def top_skills(limit: int = 10, session: AsyncSession = Depends(get_db)):
     return await skills_service.top_skills(limit=limit, session=session)
@@ -22,7 +25,10 @@ async def top_skills(limit: int = 10, session: AsyncSession = Depends(get_db)):
 @router.get(
     "/skills/search",
     response_model=List[schemas.SkillRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def search_skills(q: str = Query(...), session: AsyncSession = Depends(get_db)):
     return await skills_service.search_skills(q=q, session=session)
@@ -31,18 +37,29 @@ async def search_skills(q: str = Query(...), session: AsyncSession = Depends(get
 @router.get(
     "/skills",
     response_model=List[schemas.SkillRead],
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def list_skills(
-    profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
+    profile_id: int = Query(None, gt=0),
+    page: int = Query(1, gt=0),
+    per_page: int = Query(20, gt=1, le=100),
+    session: AsyncSession = Depends(get_db),
 ):
-    return await skills_service.list_skills(profile_id, session)
+    return await skills_service.list_skills(
+        profile_id, page=page, per_page=per_page, session=session
+    )
 
 
 @router.post(
     "/skills",
     response_model=schemas.SkillRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def create_skill(
     skill: schemas.SkillCreate, session: AsyncSession = Depends(get_db)
@@ -54,7 +71,10 @@ async def create_skill(
 @router.get(
     "/skills/{skill_id}",
     response_model=schemas.SkillRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def get_skill(
     skill_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
@@ -68,7 +88,10 @@ async def get_skill(
 @router.put(
     "/skills/{skill_id}",
     response_model=schemas.SkillRead,
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def update_skill(
     skill_id: int, skill: schemas.SkillCreate, session: AsyncSession = Depends(get_db)
@@ -82,7 +105,10 @@ async def update_skill(
 
 @router.delete(
     "/skills/{skill_id}",
-    responses={404: {"model": schemas.ErrorResponse}, 500: {"model": schemas.ErrorResponse}},
+    responses={
+        404: {"model": schemas.ErrorResponse},
+        500: {"model": schemas.ErrorResponse},
+    },
 )
 async def delete_skill(skill_id: int, session: AsyncSession = Depends(get_db)):
     ok = await skills_service.delete_skill(skill_id, session)
