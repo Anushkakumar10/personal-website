@@ -22,8 +22,11 @@ async def search_skills(q: str = Query(...), session: AsyncSession = Depends(get
 
 
 @router.get("/skills", response_model=List[schemas.SkillRead])
-async def list_skills(session: AsyncSession = Depends(get_db)):
-    return await models.Skill.list(session=session)
+async def list_skills(
+    profile_id: int = Query(None, gt=0), session: AsyncSession = Depends(get_db)
+):
+    filters = [models.Skill.profile_id == profile_id]
+    return await models.Skill.list(filters=filters, session=session)
 
 
 @router.post("/skills", response_model=schemas.SkillRead)

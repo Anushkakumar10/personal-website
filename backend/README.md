@@ -1,6 +1,6 @@
 # Backend
 
-FastAPI backend scaffold for the Predusk assessment.
+FastAPI backend scaffold.
 
 Run locally:
 
