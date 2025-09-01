@@ -1,54 +1,59 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from .. import schemas
+from .. import models, schemas
+from ..db import get_db
 
 router = APIRouter()
 
-_educations = [
-    {"id": 1, "institution": "University", "degree": "BSc", "profile_id": None},
-]
-
 
 @router.get("/educations", response_model=List[schemas.EducationRead])
-async def list_educations():
-    return _educations
+async def list_educations(session: AsyncSession = Depends(get_db)):
+    return await models.Education.list(session=session)
 
 
 @router.post("/educations", response_model=schemas.EducationRead)
-async def create_education(item: schemas.EducationCreate):
-    next_id = max((e["id"] for e in _educations), default=0) + 1
+async def create_education(
+    item: schemas.EducationCreate, session: AsyncSession = Depends(get_db)
+):
     data = item.model_dump()
-    data["id"] = next_id
-    _educations.append(data)
-    return data
+    instance = await models.Education.create(data, session=session)
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.get("/educations/{education_id}", response_model=schemas.EducationRead)
-async def get_education(education_id: int = Path(..., gt=0)):
-    for e in _educations:
-        if e["id"] == education_id:
-            return e
-    raise HTTPException(status_code=404, detail="Education not found")
+async def get_education(
+    education_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
+):
+    instance = await models.Education.get_by_id(education_id, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Education not found")
+    return instance
 
 
 @router.put("/educations/{education_id}", response_model=schemas.EducationRead)
-async def update_education(education_id: int, item: schemas.EducationCreate):
-    for idx, e in enumerate(_educations):
-        if e["id"] == education_id:
-            updated = e.copy()
-            updated.update(item.model_dump(exclude_unset=True))
-            updated["id"] = education_id
-            _educations[idx] = updated
-            return updated
-    raise HTTPException(status_code=404, detail="Education not found")
+async def update_education(
+    education_id: int,
+    item: schemas.EducationCreate,
+    session: AsyncSession = Depends(get_db),
+):
+    data = item.model_dump(exclude_unset=True)
+    instance = await models.Education.update_by_id(education_id, data, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Education not found")
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.delete("/educations/{education_id}")
-async def delete_education(education_id: int):
-    for idx, e in enumerate(_educations):
-        if e["id"] == education_id:
-            _educations.pop(idx)
-            return {"ok": True}
-    raise HTTPException(status_code=404, detail="Education not found")
+async def delete_education(education_id: int, session: AsyncSession = Depends(get_db)):
+    ok = await models.Education.delete_by_id(education_id, session=session)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Education not found")
+    await session.commit()
+    return {"ok": True}

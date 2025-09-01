@@ -1,60 +1,63 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from .. import schemas
+from .. import models, schemas
+from ..db import get_db
 
 router = APIRouter()
 
-_experiences = [
-    {
-        "id": 1,
-        "company": "Acme",
-        "role": "Engineer",
-        "skills": ["python"],
-        "profile_id": None,
-    },
-]
-
 
 @router.get("/experiences", response_model=List[schemas.ExperienceRead])
-async def list_experiences():
-    return _experiences
+async def list_experiences(session: AsyncSession = Depends(get_db)):
+    return await models.Experience.list(session=session)
 
 
 @router.post("/experiences", response_model=schemas.ExperienceRead)
-async def create_experience(item: schemas.ExperienceCreate):
-    next_id = max((e["id"] for e in _experiences), default=0) + 1
+async def create_experience(
+    item: schemas.ExperienceCreate, session: AsyncSession = Depends(get_db)
+):
     data = item.model_dump()
-    data["id"] = next_id
-    _experiences.append(data)
-    return data
+    instance = await models.Experience.create(data, session=session)
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.get("/experiences/{experience_id}", response_model=schemas.ExperienceRead)
-async def get_experience(experience_id: int = Path(..., gt=0)):
-    for e in _experiences:
-        if e["id"] == experience_id:
-            return e
-    raise HTTPException(status_code=404, detail="Experience not found")
+async def get_experience(
+    experience_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
+):
+    instance = await models.Experience.get_by_id(experience_id, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Experience not found")
+    return instance
 
 
 @router.put("/experiences/{experience_id}", response_model=schemas.ExperienceRead)
-async def update_experience(experience_id: int, item: schemas.ExperienceCreate):
-    for idx, e in enumerate(_experiences):
-        if e["id"] == experience_id:
-            updated = e.copy()
-            updated.update(item.model_dump(exclude_unset=True))
-            updated["id"] = experience_id
-            _experiences[idx] = updated
-            return updated
-    raise HTTPException(status_code=404, detail="Experience not found")
+async def update_experience(
+    experience_id: int,
+    item: schemas.ExperienceCreate,
+    session: AsyncSession = Depends(get_db),
+):
+    data = item.model_dump(exclude_unset=True)
+    instance = await models.Experience.update_by_id(
+        experience_id, data, session=session
+    )
+    if not instance:
+        raise HTTPException(status_code=404, detail="Experience not found")
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.delete("/experiences/{experience_id}")
-async def delete_experience(experience_id: int):
-    for idx, e in enumerate(_experiences):
-        if e["id"] == experience_id:
-            _experiences.pop(idx)
-            return {"ok": True}
-    raise HTTPException(status_code=404, detail="Experience not found")
+async def delete_experience(
+    experience_id: int, session: AsyncSession = Depends(get_db)
+):
+    ok = await models.Experience.delete_by_id(experience_id, session=session)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Experience not found")
+    await session.commit()
+    return {"ok": True}

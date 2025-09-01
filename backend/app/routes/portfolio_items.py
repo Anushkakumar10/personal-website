@@ -1,60 +1,59 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from .. import schemas
+from .. import models, schemas
+from ..db import get_db
 
 router = APIRouter()
 
-_portfolio_items = [
-    {
-        "id": 1,
-        "title": "Portfolio A",
-        "description": "Demo",
-        "skills": [],
-        "profile_id": None,
-    },
-]
-
 
 @router.get("/portfolio-items", response_model=List[schemas.PortfolioItemRead])
-async def list_portfolio_items():
-    return _portfolio_items
+async def list_portfolio_items(session: AsyncSession = Depends(get_db)):
+    return await models.PortfolioItem.list(session=session)
 
 
 @router.post("/portfolio-items", response_model=schemas.PortfolioItemRead)
-async def create_portfolio_item(item: schemas.PortfolioItemCreate):
-    next_id = max((p["id"] for p in _portfolio_items), default=0) + 1
+async def create_portfolio_item(
+    item: schemas.PortfolioItemCreate, session: AsyncSession = Depends(get_db)
+):
     data = item.model_dump()
-    data["id"] = next_id
-    _portfolio_items.append(data)
-    return data
+    instance = await models.PortfolioItem.create(data, session=session)
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.get("/portfolio-items/{item_id}", response_model=schemas.PortfolioItemRead)
-async def get_portfolio_item(item_id: int = Path(..., gt=0)):
-    for p in _portfolio_items:
-        if p["id"] == item_id:
-            return p
-    raise HTTPException(status_code=404, detail="Portfolio item not found")
+async def get_portfolio_item(
+    item_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
+):
+    instance = await models.PortfolioItem.get_by_id(item_id, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Portfolio item not found")
+    return instance
 
 
 @router.put("/portfolio-items/{item_id}", response_model=schemas.PortfolioItemRead)
-async def update_portfolio_item(item_id: int, item: schemas.PortfolioItemCreate):
-    for idx, p in enumerate(_portfolio_items):
-        if p["id"] == item_id:
-            updated = p.copy()
-            updated.update(item.model_dump(exclude_unset=True))
-            updated["id"] = item_id
-            _portfolio_items[idx] = updated
-            return updated
-    raise HTTPException(status_code=404, detail="Portfolio item not found")
+async def update_portfolio_item(
+    item_id: int,
+    item: schemas.PortfolioItemCreate,
+    session: AsyncSession = Depends(get_db),
+):
+    data = item.model_dump(exclude_unset=True)
+    instance = await models.PortfolioItem.update_by_id(item_id, data, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Portfolio item not found")
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.delete("/portfolio-items/{item_id}")
-async def delete_portfolio_item(item_id: int):
-    for idx, p in enumerate(_portfolio_items):
-        if p["id"] == item_id:
-            _portfolio_items.pop(idx)
-            return {"ok": True}
-    raise HTTPException(status_code=404, detail="Portfolio item not found")
+async def delete_portfolio_item(item_id: int, session: AsyncSession = Depends(get_db)):
+    ok = await models.PortfolioItem.delete_by_id(item_id, session=session)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Portfolio item not found")
+    await session.commit()
+    return {"ok": True}

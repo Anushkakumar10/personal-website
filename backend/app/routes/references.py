@@ -1,60 +1,59 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from .. import schemas
+from .. import models, schemas
+from ..db import get_db
 
 router = APIRouter()
 
-_references = [
-    {
-        "id": 1,
-        "name": "Ref A",
-        "relation": "Manager",
-        "contact_info": "ref@example.com",
-        "profile_id": None,
-    },
-]
-
 
 @router.get("/references", response_model=List[schemas.ReferenceRead])
-async def list_references():
-    return _references
+async def list_references(session: AsyncSession = Depends(get_db)):
+    return await models.Reference.list(session=session)
 
 
 @router.post("/references", response_model=schemas.ReferenceRead)
-async def create_reference(item: schemas.ReferenceCreate):
-    next_id = max((r["id"] for r in _references), default=0) + 1
+async def create_reference(
+    item: schemas.ReferenceCreate, session: AsyncSession = Depends(get_db)
+):
     data = item.model_dump()
-    data["id"] = next_id
-    _references.append(data)
-    return data
+    instance = await models.Reference.create(data, session=session)
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.get("/references/{ref_id}", response_model=schemas.ReferenceRead)
-async def get_reference(ref_id: int = Path(..., gt=0)):
-    for r in _references:
-        if r["id"] == ref_id:
-            return r
-    raise HTTPException(status_code=404, detail="Reference not found")
+async def get_reference(
+    ref_id: int = Path(..., gt=0), session: AsyncSession = Depends(get_db)
+):
+    instance = await models.Reference.get_by_id(ref_id, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Reference not found")
+    return instance
 
 
 @router.put("/references/{ref_id}", response_model=schemas.ReferenceRead)
-async def update_reference(ref_id: int, item: schemas.ReferenceCreate):
-    for idx, r in enumerate(_references):
-        if r["id"] == ref_id:
-            updated = r.copy()
-            updated.update(item.model_dump(exclude_unset=True))
-            updated["id"] = ref_id
-            _references[idx] = updated
-            return updated
-    raise HTTPException(status_code=404, detail="Reference not found")
+async def update_reference(
+    ref_id: int,
+    item: schemas.ReferenceCreate,
+    session: AsyncSession = Depends(get_db),
+):
+    data = item.model_dump(exclude_unset=True)
+    instance = await models.Reference.update_by_id(ref_id, data, session=session)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Reference not found")
+    await session.commit()
+    await session.refresh(instance)
+    return instance
 
 
 @router.delete("/references/{ref_id}")
-async def delete_reference(ref_id: int):
-    for idx, r in enumerate(_references):
-        if r["id"] == ref_id:
-            _references.pop(idx)
-            return {"ok": True}
-    raise HTTPException(status_code=404, detail="Reference not found")
+async def delete_reference(ref_id: int, session: AsyncSession = Depends(get_db)):
+    ok = await models.Reference.delete_by_id(ref_id, session=session)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Reference not found")
+    await session.commit()
+    return {"ok": True}
